@@ -192,11 +192,10 @@ if __name__ == '__main__':
     batch_size = 512
     seqlen = 35
     epochs = 200  # 100, 200, 300
-    patience = 5
+    patience = 10
     verbose = 0
     rnnlay_units = 256
     dlay_units = 256
-    kfolds = 10
     tau = 0.2
     print('Loading data...')
     x = np.load('/home/xxx/drug_data/dualseqs_down_%d.npy' % maxlen, allow_pickle=True)

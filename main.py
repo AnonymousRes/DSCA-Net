@@ -172,8 +172,8 @@ def train_model(model_, x_train_, y_train_, x_test_, y_test_, batch_size_, epoch
     end_time = datetime.datetime.now()
     time = (end_time-start_time).seconds
     y_pred_ = model_.predict(x_test_)
-    my_jaccard_score, my_hamming_loss, my_label_ranking_average_precision_score, \
-    my_micro_f1, my_micro_auc = my_test(y_true=y_test_, y_pred=y_pred_)
+    my_jaccard_score, my_label_ranking_average_precision_score, \
+    my_micro_f1 = my_test(y_true=y_test_, y_pred=y_pred_)
     print(model_.name, time, [
         round(my_jaccard_score, 8),
         round(my_label_ranking_average_precision_score, 8),

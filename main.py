@@ -203,7 +203,7 @@ if __name__ == '__main__':
     y = np.load('/home/leew/drug_data/seqy_down_%d.npy' % maxlen, allow_pickle=True)
     max_features = x[0].shape[1]
     # Train
-    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=2020)
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.25, random_state=2020)
 
     print('\nPad sequences (samples x time)')
     x_train = sequence.pad_sequences(x_train, maxlen=seqlen, padding='post', value=0)

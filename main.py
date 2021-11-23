@@ -199,8 +199,8 @@ if __name__ == '__main__':
     kfolds = 5
     tau = 0.2
     print('Loading data...')
-    x = np.load('/xxx/dualseqs_down_%d.npy' % maxlen, allow_pickle=True)
-    y = np.load('/xxx/seqy_down_%d.npy' % maxlen, allow_pickle=True)
+    x = np.load('/home/xxx/drug_data/dualseqs_down_%d.npy' % maxlen, allow_pickle=True)
+    y = np.load('/home/xxx/drug_data/seqy_down_%d.npy' % maxlen, allow_pickle=True)
     max_features = x[0].shape[1]
     # Train
     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.25, random_state=2020)

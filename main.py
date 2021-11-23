@@ -10,6 +10,7 @@ from keras.preprocessing import sequence
 from keras.layers import *
 from keras import *
 from DSCA import *
+
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 
@@ -80,7 +81,8 @@ def my_test(y_true, y_pred):
 
     # print(y_true_after.shape, y_pred_after.shape)
 
-    my_label_ranking_average_precision_score = label_ranking_average_precision_score(y_true=y_true_after, y_score=y_pred_after)
+    my_label_ranking_average_precision_score = label_ranking_average_precision_score(y_true=y_true_after,
+                                                                                     y_score=y_pred_after)
 
     y_pred_after[y_pred_after >= 0.5] = 1
     y_pred_after[y_pred_after < 0.5] = 0
@@ -90,15 +92,12 @@ def my_test(y_true, y_pred):
     my_jaccard_score = jaccard_score(y_true=y_true_after, y_pred=y_pred_after, average='samples')
     my_micro_f1 = f1_score(y_true_after, y_pred_after, average='micro')
 
-
-    return \
-        my_jaccard_score,
-        my_label_ranking_average_precision_score, \
-        my_micro_f1
+    return [my_jaccard_score, my_label_ranking_average_precision_score, my_micro_f1]
 
 
 # Dsca
-def get_dscagru(seqlen_, max_features_, seqx1_dim, seqx2_dim, seqx1_emb_dim, seqx2_emb_dim, tau_, rnnlay_units_, dlay_units_):
+def get_dscagru(seqlen_, max_features_, seqx1_dim, seqx2_dim, seqx1_emb_dim, seqx2_emb_dim, tau_, rnnlay_units_,
+                dlay_units_):
     inputs = Input(shape=(seqlen_, max_features_))
     hout = DscaGRU(units=rnnlay_units_, return_sequences=True,
                    seqx1_dim=seqx1_dim, seqx2_dim=seqx2_dim,
@@ -111,13 +110,14 @@ def get_dscagru(seqlen_, max_features_, seqx1_dim, seqx2_dim, seqx1_emb_dim, seq
 
     hout = Dense(dlay_units_, activation=keras.activations.relu)(hout)
     hout = Dropout(rate=0.3)(hout)
-    
+
     hout_final = Dense(400, activation=keras.activations.sigmoid)(hout)
     model = Model(inputs=inputs, outputs=hout_final, name='DSCA-GRU')
     return model
 
 
-def get_dscalstm(seqlen_, max_features_, seqx1_dim, seqx2_dim, seqx1_emb_dim, seqx2_emb_dim, tau_, rnnlay_units_, dlay_units_):
+def get_dscalstm(seqlen_, max_features_, seqx1_dim, seqx2_dim, seqx1_emb_dim, seqx2_emb_dim, tau_, rnnlay_units_,
+                 dlay_units_):
     inputs = Input(shape=(seqlen_, max_features_))
     hout = DscaLSTM(rnnlay_units_, return_sequences=True,
                     seqx1_dim=seqx1_dim, seqx2_dim=seqx2_dim,
@@ -136,7 +136,8 @@ def get_dscalstm(seqlen_, max_features_, seqx1_dim, seqx2_dim, seqx1_emb_dim, se
     return model
 
 
-def get_dscarnn(seqlen_, max_features_, seqx1_dim, seqx2_dim, seqx1_emb_dim, seqx2_emb_dim, tau_, rnnlay_units_, dlay_units_):
+def get_dscarnn(seqlen_, max_features_, seqx1_dim, seqx2_dim, seqx1_emb_dim, seqx2_emb_dim, tau_, rnnlay_units_,
+                dlay_units_):
     inputs = Input(shape=(seqlen_, max_features_))
     hout = DscaRNN(rnnlay_units_, return_sequences=True,
                    seqx1_dim=seqx1_dim, seqx2_dim=seqx2_dim,
@@ -144,13 +145,13 @@ def get_dscarnn(seqlen_, max_features_, seqx1_dim, seqx2_dim, seqx1_emb_dim, seq
                    seqx2_emb_dim=seqx2_emb_dim,
                    tau=tau_,
                    )(inputs)
-    
+
     hout = Dense(dlay_units_, activation=keras.activations.relu)(hout)
     hout = Dropout(rate=0.3)(hout)
 
     hout = Dense(dlay_units_, activation=keras.activations.relu)(hout)
     hout = Dropout(rate=0.3)(hout)
-    
+
     hout_final = Dense(400, activation=keras.activations.sigmoid)(hout)
     model = Model(inputs=inputs, outputs=hout_final, name='DSCA-RNN')
     return model
@@ -170,10 +171,13 @@ def train_model(model_, x_train_, y_train_, x_test_, y_test_, batch_size_, epoch
                verbose=verbose_
                )
     end_time = datetime.datetime.now()
-    time = (end_time-start_time).seconds
+    time = (end_time - start_time).seconds
     y_pred_ = model_.predict(x_test_)
-    my_jaccard_score, my_label_ranking_average_precision_score, \
-    my_micro_f1 = my_test(y_true=y_test_, y_pred=y_pred_)
+
+    re_set = my_test(y_true=y_test_, y_pred=y_pred_)
+    my_jaccard_score = re_set[0]
+    my_label_ranking_average_precision_score = re_set[1]
+    my_micro_f1 = re_set[2]
     print(model_.name, time, [
         round(my_jaccard_score, 8),
         round(my_label_ranking_average_precision_score, 8),
@@ -195,8 +199,8 @@ if __name__ == '__main__':
     kfolds = 5
     tau = 0.2
     print('Loading data...')
-    x = np.load('/XXXXX/dualseqs_down_%d.npy' % maxlen, allow_pickle=True)
-    y = np.load('/XXXXX/seqy_down_%d.npy' % maxlen, allow_pickle=True)
+    x = np.load('/home/leew/drug_data/dualseqs_down_%d.npy' % maxlen, allow_pickle=True)
+    y = np.load('/home/leew/drug_data/seqy_down_%d.npy' % maxlen, allow_pickle=True)
     max_features = x[0].shape[1]
     # Train
     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=2020)
@@ -221,7 +225,7 @@ if __name__ == '__main__':
     print('batch_size:', batch_size)
     print('patience:', patience)
     # print('tau:', tau)
-    print('x_train shape:',  x_train.shape)
+    print('x_train shape:', x_train.shape)
     print('x_test shape:', x_test.shape)
     print('y_train shape:', y_train.shape)
     print('y_test shape:', y_test.shape)
@@ -231,5 +235,3 @@ if __name__ == '__main__':
                 x_train, y_train, x_test, y_test, batch_size, epochs, patience, verbose)
     train_model(get_dscagru(seqlen, max_features, 400, max_features - 400, 128, 128, tau, rnnlay_units, dlay_units),
                 x_train, y_train, x_test, y_test, batch_size, epochs, patience, verbose)
-
-

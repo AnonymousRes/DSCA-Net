@@ -196,7 +196,7 @@ if __name__ == '__main__':
     verbose = 0
     rnnlay_units = 256
     dlay_units = 256
-    kfolds = 5
+    kfolds = 10
     tau = 0.2
     print('Loading data...')
     x = np.load('/home/xxx/drug_data/dualseqs_down_%d.npy' % maxlen, allow_pickle=True)

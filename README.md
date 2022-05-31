@@ -15,4 +15,4 @@
 
 ## Note:
 
-Due to the double-blind policy for other papers associated with this account, we may at any time set this project to "private" and make it invisible, in which case, if you need the code, send an email to leewu@mail.sdu.edu.cn/tensorfire@mail.sdu.edu.cn
+Due to the double-blind policy for other papers associated with this account, we may at any time set this project to "private" and make it invisible, in which case, if you need the code, send an email to leewu@mail.sdu.edu.cn and tensorfire@mail.sdu.edu.cn

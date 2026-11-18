@@ -1,7 +1,7 @@
 # DSCA-Net: Predicting Prescriptions via Dual Sequences with Cross Attention Network
 
 <p align="center">
-  <img src="DSCA-Net.png" alt="DSCA-Net Architecture" width="888">
+  <img src="dsca_github.png" alt="DSCA-Net Architecture" width="888">
 </p>
 
 <p align="center">

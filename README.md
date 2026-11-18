@@ -204,8 +204,3 @@ If you find this repository or our work useful in your research, please cite:
   doi={10.1109/BIBM49941.2020.9313492}
 }
 ```
-
-## Contact
-
-If you have any questions about the implementation or experiments, please feel free to open a GitHub issue or contact the authors through the repository.
-
